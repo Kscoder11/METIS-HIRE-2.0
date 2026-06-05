@@ -20,6 +20,7 @@ export interface Application {
     overall_score: number
     section_scores?: Record<string, number>
     confidence_level?: string
+    parsing_warnings?: string[]
   }
   metisScore?: number
   advancedRanking?: {
