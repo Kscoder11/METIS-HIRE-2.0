@@ -675,25 +675,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## Contributors
-
-<a href="https://github.com/Ansh-dhanani/metis/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Ansh-dhanani/metis" />
-</a>
-
----
 
 We would like to thank the following contributors for their valuable contributions to Metis:
 
-### Core Team
 
-- **Ansh** - Project Lead & Full-Stack Developer
-  - Frontend Architecture (Next.js, TypeScript, Tailwind CSS)
-  - Backend Development (Flask, Python, MongoDB)
-  - AI Integration (Groq API, LangGraph, Resume Parsing)
-  - System Design & Deployment
-
-### Contributors
 
 We welcome contributions from the community! See our [Contributing Guidelines](#contributing) to get started.
 
