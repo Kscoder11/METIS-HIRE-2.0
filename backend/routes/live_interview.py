@@ -106,7 +106,7 @@ def init_socketio(socketio):
             resumed = False
             messages_so_far = []
 
-            if db and application_id:
+            if db is not None and application_id:
                 existing_session_doc = db.interview_sessions.find_one({
                     'applicationId': str(application_id),
                     'status': 'in_progress'
@@ -125,7 +125,7 @@ def init_socketio(socketio):
                 resumed = True
             else:
                 # Persist a new in-progress session record to the database
-                if db:
+                if db is not None:
                     new_session = {
                         'applicationId': str(application_id) if application_id else None,
                         'candidateId': str(candidate_id) if candidate_id else None,
