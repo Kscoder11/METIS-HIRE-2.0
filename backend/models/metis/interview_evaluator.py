@@ -109,6 +109,31 @@ Return ONLY valid JSON, no other text."""
             evaluation.setdefault("overall_assessment", "Evaluation complete.")
             evaluation.setdefault("hire_recommendation", "maybe")
             
+            # ── Normalize scores to 0-100 ────────────────────────────────
+            # Groq sometimes returns scores on a 0-1 decimal scale (e.g. 0.7
+            # instead of 70). Detect this and rescale to 0-100.
+            score_keys = [
+                "personality_score",
+                "technical_approach_score",
+                "communication_score",
+                "problem_solving_score",
+            ]
+            
+            # Check if ALL scores are <= 1.0 — that means the LLM used 0-1 scale
+            raw_scores = [evaluation[k] for k in score_keys]
+            if all(isinstance(s, (int, float)) and s <= 1.0 for s in raw_scores):
+                for k in score_keys:
+                    evaluation[k] = round(evaluation[k] * 100)
+            # Check if ALL scores are <= 10 — that means the LLM used 0-10 scale
+            elif all(isinstance(s, (int, float)) and s <= 10 for s in raw_scores):
+                for k in score_keys:
+                    evaluation[k] = round(evaluation[k] * 10)
+            
+            # Clamp every score to 0-100 integer range
+            for k in score_keys:
+                evaluation[k] = max(0, min(100, int(round(evaluation[k]))))
+            # ──────────────────────────────────────────────────────────────
+            
             # Calculate overall interview score (Round 2 score)
             evaluation["interview_score"] = round(
                 (evaluation["personality_score"] + 
