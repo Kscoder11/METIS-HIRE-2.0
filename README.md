@@ -52,6 +52,7 @@ The platform supports both candidates and HR recruiters, providing a seamless ex
 - **Scoring Engine**: Weighted algorithm combining resume analysis and interview performance
 - **Real-time Communication**: WebSocket-based live interviews
 - **Responsive Design**: Mobile-friendly interface built with modern web technologies
+- **Theme Support**: Seamless light and dark mode toggling with dynamic animated gradients
 
 ## Technology Stack
 
