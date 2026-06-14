@@ -63,15 +63,32 @@ else:
 # ─────────────────────────────────────────────────────────────────────────────
 
 
-def _send_via_brevo(to: str, subject: str, html_body: str) -> bool:
+def _send_via_brevo(
+    to: str, subject: str, html_body: str,
+    attachments: Optional[List[tuple]] = None
+) -> bool:
     """Send email using Brevo (Sendinblue) HTTP API — no SMTP ports needed."""
     try:
-        payload = json.dumps({
+        import base64 as _b64
+
+        email_payload = {
             "sender": {"name": "Metis Hire", "email": _SMTP_USERNAME or "metishire2.0@gmail.com"},
             "to": [{"email": to}],
             "subject": subject,
             "htmlContent": html_body,
-        }).encode("utf-8")
+        }
+
+        # Attach files (e.g. .ics calendar invites)
+        if attachments:
+            brevo_attachments = []
+            for filename, file_bytes in attachments:
+                brevo_attachments.append({
+                    "name": filename,
+                    "content": _b64.b64encode(file_bytes).decode("ascii"),
+                })
+            email_payload["attachment"] = brevo_attachments
+
+        payload = json.dumps(email_payload).encode("utf-8")
 
         req = urllib.request.Request(
             "https://api.brevo.com/v3/smtp/email",
@@ -151,7 +168,7 @@ def _send(
 
     # Try Brevo first (works on Render where SMTP ports are blocked)
     if _BREVO_ENABLED:
-        return _send_via_brevo(to, subject, html_body)
+        return _send_via_brevo(to, subject, html_body, attachments)
 
     # Fallback to SMTP
     if _SMTP_ENABLED:
@@ -298,3 +315,51 @@ def send_interview_results_ready(
     </body></html>
     """
     return _send(candidate_email, subject, html)
+
+
+def send_welcome_email(
+    user_email: str,
+    user_name: str,
+    role: str
+) -> bool:
+    """Send a welcome email when a new user registers on Metis Hire."""
+    role_label = "HR Recruiter" if role == "hr" else "Candidate"
+    role_tips = (
+        """
+        <ul style="margin:0; padding-left:20px;">
+          <li>Create job postings and let AI parse the requirements</li>
+          <li>Review candidate applications with AI-powered scoring</li>
+          <li>Customize scoring weights for each job</li>
+          <li>View anti-cheat flags and interview analytics</li>
+        </ul>
+        """
+        if role == "hr"
+        else """
+        <ul style="margin:0; padding-left:20px;">
+          <li>Complete your profile and upload your resume</li>
+          <li>Browse open positions and apply with one click</li>
+          <li>Take AI-powered interviews at your own pace</li>
+          <li>Track your application status in real-time</li>
+        </ul>
+        """
+    )
+
+    subject = "Welcome to Metis Hire! 🎉"
+    html = f"""
+    <html><body style="font-family: Arial, sans-serif; color: #1a1a2e; max-width:600px; margin:auto;">
+      <div style="background: linear-gradient(135deg,#6c63ff,#4ecdc4); padding:30px; border-radius:12px 12px 0 0;">
+        <h1 style="color:white; margin:0;">Metis Hire</h1>
+      </div>
+      <div style="padding:30px; background:#f8f9fa; border-radius:0 0 12px 12px;">
+        <h2>Welcome aboard, {user_name}! 👋</h2>
+        <p>Your account has been created successfully as a <strong>{role_label}</strong>.</p>
+        <div style="background:#fff; border-left:4px solid #6c63ff; padding:16px; margin:20px 0; border-radius:6px;">
+          <p style="margin:0 0 8px;"><strong>Here's what you can do next:</strong></p>
+          {role_tips}
+        </div>
+        <p>Log in to your dashboard to get started.</p>
+        <p style="color:#666; font-size:12px;">Metis Hire — Intelligent Recruitment</p>
+      </div>
+    </body></html>
+    """
+    return _send(user_email, subject, html)

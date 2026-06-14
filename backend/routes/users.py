@@ -4,6 +4,14 @@ from utils.db import db
 from services.ai_service import ai_service
 from datetime import datetime
 
+# Non-fatal notification imports
+try:
+    from utils.email import send_welcome_email
+    WELCOME_EMAIL_AVAILABLE = True
+except Exception as _notif_err:
+    print(f"[WARN] Welcome email not available: {_notif_err}")
+    WELCOME_EMAIL_AVAILABLE = False
+
 users_bp = Blueprint('users', __name__)
 
 @users_bp.route('/register', methods=['GET', 'POST'])
@@ -46,6 +54,14 @@ def register():
     
     # Generate a simple token (user_id as token for MVP - use JWT in production)
     token = str(result.inserted_id)
+
+    # ── Email notification: welcome ──
+    if WELCOME_EMAIL_AVAILABLE:
+        try:
+            user_name = f"{data.get('firstName', '')} {data.get('lastName', '')}".strip() or data['email']
+            send_welcome_email(data['email'], user_name, data['role'])
+        except Exception as _e:
+            print(f"[WARN] Welcome email failed: {_e}")
     
     return jsonify({
         "userId": str(result.inserted_id),
@@ -477,6 +493,13 @@ def oauth_register():
         
         # Generate a simple token (user_id as token for MVP - use JWT in production)
         token = str(result.inserted_id)
+
+        # ── Email notification: welcome ──
+        if WELCOME_EMAIL_AVAILABLE:
+            try:
+                send_welcome_email(email, name or email, role)
+            except Exception as _e:
+                print(f"[WARN] OAuth welcome email failed: {_e}")
         
         return jsonify({
             "user": {

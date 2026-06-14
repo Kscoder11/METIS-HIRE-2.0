@@ -528,6 +528,12 @@ def select_candidate(application_id):
             print(f"[WARN] Accepted email failed: {_e}")
     
     # Reject all other applications for this job
+    other_apps = list(db.applications.find({
+        "jobId": job_id,
+        "_id": {"$ne": ObjectId(application_id)},
+        "status": {"$ne": "rejected"}
+    }))
+
     db.applications.update_many(
         {
             "jobId": job_id,
@@ -548,6 +554,18 @@ def select_candidate(application_id):
             }
         }
     )
+
+    # ── Email notification: rejection for other candidates ──
+    if NOTIFICATIONS_AVAILABLE:
+        for other_app in other_apps:
+            try:
+                rej_email = other_app.get('candidateEmail', '')
+                rej_name = other_app.get('candidateName', 'Candidate')
+                j = db.jobs.find_one({'_id': job_id})
+                job_title = j.get('title', 'the position') if j else 'the position'
+                send_application_rejected(rej_email, rej_name, job_title)
+            except Exception as _e:
+                print(f"[WARN] Rejection email failed for {rej_email}: {_e}")
     
     # Update job status to filled
     db.jobs.update_one(
@@ -596,8 +614,25 @@ def accept_candidate(application_id):
             }
         }
     )
+
+    # ── Email notification: accepted ──
+    if NOTIFICATIONS_AVAILABLE:
+        try:
+            cand_email = application.get('candidateEmail', '')
+            cand_name = application.get('candidateName', 'Candidate')
+            j = db.jobs.find_one({'_id': application['jobId']})
+            job_title = j.get('title', 'the position') if j else 'the position'
+            send_application_accepted(cand_email, cand_name, job_title)
+        except Exception as _e:
+            print(f"[WARN] Accepted email failed: {_e}")
     
     # Reject all other applications for this job
+    other_apps = list(db.applications.find({
+        "jobId": job_id,
+        "_id": {"$ne": ObjectId(application_id)},
+        "status": {"$ne": "rejected"}
+    }))
+
     db.applications.update_many(
         {
             "jobId": job_id,
@@ -618,6 +653,18 @@ def accept_candidate(application_id):
             }
         }
     )
+
+    # ── Email notification: rejection for other candidates ──
+    if NOTIFICATIONS_AVAILABLE:
+        for other_app in other_apps:
+            try:
+                rej_email = other_app.get('candidateEmail', '')
+                rej_name = other_app.get('candidateName', 'Candidate')
+                j = db.jobs.find_one({'_id': job_id})
+                job_title = j.get('title', 'the position') if j else 'the position'
+                send_application_rejected(rej_email, rej_name, job_title)
+            except Exception as _e:
+                print(f"[WARN] Rejection email failed for {rej_email}: {_e}")
     
     # Close the job
     db.jobs.update_one(
