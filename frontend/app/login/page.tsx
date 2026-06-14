@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { signIn, useSession } from 'next-auth/react';
 import { useAuth } from '@/contexts/auth-context';
 import Link from 'next/link';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -116,14 +117,15 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex justify-center items-center w-full min-h-screen bg-black p-5 font-sans text-white">
-      <div className="flex flex-wrap w-full max-w-[1000px] bg-black rounded-3xl overflow-hidden border border-[#1a1a1a] shadow-[0_0_40px_rgba(0,0,0,0.5)]">
+    <div className="flex justify-center items-center w-full min-h-screen bg-white dark:bg-black p-5 font-sans text-foreground">
+      <div className="fixed top-5 right-5 z-50"><ThemeToggle /></div>
+      <div className="flex flex-wrap w-full max-w-[1000px] bg-white dark:bg-black rounded-3xl overflow-hidden border border-gray-200 dark:border-[#1a1a1a] shadow-[0_0_40px_rgba(0,0,0,0.1)] dark:shadow-[0_0_40px_rgba(0,0,0,0.5)]">
         {/* Left Panel - Form */}
-        <div className="flex-[1_1_340px] bg-black p-10 flex flex-col justify-center">
+        <div className="flex-[1_1_340px] bg-white dark:bg-black p-10 flex flex-col justify-center">
           <div className="w-full max-w-[400px] mx-auto">
             <div className="mb-8">
-              <div className="text-white text-[26px] font-semibold mb-2">Sign In</div>
-              <div className="text-[#888] text-sm">Welcome back! Please sign in to your account.</div>
+              <div className="text-foreground text-[26px] font-semibold mb-2">Sign In</div>
+              <div className="text-muted-foreground text-sm">Welcome back! Please sign in to your account.</div>
             </div>
 
             <div className="flex gap-3 mb-5">
@@ -131,7 +133,7 @@ export default function LoginPage() {
                 type="button"
                 onClick={() => handleOAuthSignIn('google')}
                 disabled={isLoading}
-                className="flex-1 bg-transparent border border-[#333] text-white p-3 rounded-lg flex items-center justify-center gap-2 cursor-pointer transition-all hover:bg-[#111] hover:border-[#555] disabled:opacity-50"
+                className="flex-1 bg-transparent border border-gray-300 dark:border-[#333] text-foreground p-3 rounded-lg flex items-center justify-center gap-2 cursor-pointer transition-all hover:bg-gray-100 dark:hover:bg-[#111] hover:border-gray-400 dark:hover:border-[#555] disabled:opacity-50"
               >
                 <svg viewBox="0 0 24 24" width={20}>
                   <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -145,10 +147,10 @@ export default function LoginPage() {
               {/* LinkedIn button removed */}
             </div>
 
-            <div className="flex items-center text-[#666] text-[13px] mb-5">
-              <div className="flex-1 h-px bg-[#333]" />
+            <div className="flex items-center text-gray-400 dark:text-[#666] text-[13px] mb-5">
+              <div className="flex-1 h-px bg-gray-300 dark:bg-[#333]" />
               <span className="mx-4">Or</span>
-              <div className="flex-1 h-px bg-[#333]" />
+              <div className="flex-1 h-px bg-gray-300 dark:bg-[#333]" />
             </div>
 
             {error && (
@@ -159,25 +161,25 @@ export default function LoginPage() {
 
             <form onSubmit={handleSubmit}>
               <div className="mb-5">
-                <label className="block text-[#ccc] text-[13px] font-medium mb-2">Email</label>
+                <label className="block text-gray-600 dark:text-[#ccc] text-[13px] font-medium mb-2">Email</label>
                 <input
                   type="email"
                   placeholder="eg. john@example.com"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full bg-[#121212] border border-[#1a1a1a] p-3.5 rounded-lg text-white outline-none text-sm transition-all focus:bg-[#1a1a1a] focus:border-[#444]"
+                  className="w-full bg-gray-100 dark:bg-[#121212] border border-gray-200 dark:border-[#1a1a1a] p-3.5 rounded-lg text-foreground outline-none text-sm transition-all focus:bg-gray-200 dark:focus:bg-[#1a1a1a] focus:border-gray-400 dark:focus:border-[#444]"
                 />
               </div>
 
               <div className="mb-5">
-                <label className="block text-[#ccc] text-[13px] font-medium mb-2">Password</label>
+                <label className="block text-gray-600 dark:text-[#ccc] text-[13px] font-medium mb-2">Password</label>
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    className="w-full bg-[#121212] border border-[#1a1a1a] p-3.5 rounded-lg text-white outline-none text-sm transition-all focus:bg-[#1a1a1a] focus:border-[#444] pr-12"
+                    className="w-full bg-gray-100 dark:bg-[#121212] border border-gray-200 dark:border-[#1a1a1a] p-3.5 rounded-lg text-foreground outline-none text-sm transition-all focus:bg-gray-200 dark:focus:bg-[#1a1a1a] focus:border-gray-400 dark:focus:border-[#444] pr-12"
                   />
                   <svg
                     onClick={() => setShowPassword(!showPassword)}
@@ -200,40 +202,40 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-white text-black border-none p-4 rounded-lg font-semibold cursor-pointer transition-all hover:bg-[#e5e5e5] disabled:opacity-50 text-[15px] mb-5"
+                className="w-full bg-black text-white dark:bg-white dark:text-black border-none p-4 rounded-lg font-semibold cursor-pointer transition-all hover:bg-gray-800 dark:hover:bg-[#e5e5e5] disabled:opacity-50 text-[15px] mb-5"
               >
                 {isLoading ? 'Signing in...' : 'Sign In'}
               </button>
             </form>
 
             <div className="mb-5">
-              <div className="text-[#666] text-xs mb-2">Quick test accounts:</div>
+              <div className="text-gray-400 dark:text-[#666] text-xs mb-2">Quick test accounts:</div>
               <div className="flex gap-2">
                 <button
                   type="button"
                   onClick={() => autoFill('hr@example.com', 'hr@123456')}
-                  className="flex-1 bg-transparent border border-[#333] text-white p-2 rounded-lg text-xs cursor-pointer transition-all hover:bg-[#111] hover:border-[#555]"
+                  className="flex-1 bg-transparent border border-gray-300 dark:border-[#333] text-foreground p-2 rounded-lg text-xs cursor-pointer transition-all hover:bg-gray-100 dark:hover:bg-[#111] hover:border-gray-400 dark:hover:border-[#555]"
                 >
                   HR Account
                 </button>
                 <button
                   type="button"
                   onClick={() => autoFill('candidate@example.com', 'can@123456')}
-                  className="flex-1 bg-transparent border border-[#333] text-white p-2 rounded-lg text-xs cursor-pointer transition-all hover:bg-[#111] hover:border-[#555]"
+                  className="flex-1 bg-transparent border border-gray-300 dark:border-[#333] text-foreground p-2 rounded-lg text-xs cursor-pointer transition-all hover:bg-gray-100 dark:hover:bg-[#111] hover:border-gray-400 dark:hover:border-[#555]"
                 >
                   Candidate
                 </button>
               </div>
             </div>
 
-            <div className="text-center text-[#888] text-[13px]">
-              Don&apos;t have an account? <Link href="/register" className="text-white no-underline hover:underline">Sign up</Link>
+            <div className="text-center text-muted-foreground text-[13px]">
+              Don&apos;t have an account? <Link href="/register" className="text-foreground font-semibold no-underline hover:underline">Sign up</Link>
             </div>
           </div>
         </div>
 
         {/* Right Panel - Gradient */}
-        <div className="flex-[1_1_340px] relative bg-gradient-to-br from-[#d8b4fe] via-[#7e22ce] to-black p-10 flex flex-col justify-between min-h-[450px]">
+        <div className="flex-[1_1_340px] relative animate-gradient-wave bg-gradient-to-br from-white via-gray-100 to-gray-200 dark:from-[#d8b4fe] dark:via-[#7e22ce] dark:to-black p-10 flex flex-col justify-between min-h-[450px]">
           <div className="absolute inset-0 opacity-60 mix-blend-overlay pointer-events-none"
                style={{
                  backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E\")"

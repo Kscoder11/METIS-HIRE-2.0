@@ -10,6 +10,7 @@ import Link from 'next/link';
 import type { UserRole } from '@/lib/api/types';
 import { signOut } from 'next-auth/react';
 import { useAuth } from '@/contexts/auth-context';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 function RegisterPageContent() {
   const router = useRouter();
@@ -198,11 +199,12 @@ function RegisterPageContent() {
 
   if (!mounted) {
     return (
-      <div className="flex justify-center items-center w-full min-h-screen bg-black p-5 font-sans text-white">
-        <div className="flex flex-wrap w-full max-w-[1000px] bg-black rounded-3xl overflow-hidden border border-[#1a1a1a] shadow-[0_0_40px_rgba(0,0,0,0.5)]">
-          <div className="flex-[1_1_340px] relative bg-gradient-to-br from-[#d8b4fe] via-[#7e22ce] to-black p-10 flex flex-col justify-between min-h-[450px]" />
-          <div className="flex-[1_1_340px] bg-black p-10 flex flex-col justify-center items-center min-h-[450px]">
-            <div className="text-[#888] text-sm">Loading...</div>
+      <div className="flex justify-center items-center w-full min-h-screen bg-white dark:bg-black p-5 font-sans text-foreground">
+        <div className="fixed top-5 right-5 z-50"><ThemeToggle /></div>
+        <div className="flex flex-wrap w-full max-w-[1000px] bg-white dark:bg-black rounded-3xl overflow-hidden border border-gray-200 dark:border-[#1a1a1a] shadow-[0_0_40px_rgba(0,0,0,0.1)] dark:shadow-[0_0_40px_rgba(0,0,0,0.5)]">
+          <div className="flex-[1_1_340px] relative animate-gradient-wave bg-gradient-to-br from-white via-gray-100 to-gray-200 dark:from-[#d8b4fe] dark:via-[#7e22ce] dark:to-black p-10 flex flex-col justify-between min-h-[450px]" />
+          <div className="flex-[1_1_340px] bg-white dark:bg-black p-10 flex flex-col justify-center items-center min-h-[450px]">
+            <div className="text-muted-foreground text-sm">Loading...</div>
           </div>
         </div>
       </div>
@@ -210,10 +212,11 @@ function RegisterPageContent() {
   }
 
   return (
-    <div className="flex justify-center items-center w-full min-h-screen bg-black p-5 font-sans text-white" suppressHydrationWarning>
-      <div className="flex flex-wrap w-full max-w-[1000px] bg-black rounded-3xl overflow-hidden border border-[#1a1a1a] shadow-[0_0_40px_rgba(0,0,0,0.5)]">
+    <div className="flex justify-center items-center w-full min-h-screen bg-white dark:bg-black p-5 font-sans text-foreground" suppressHydrationWarning>
+      <div className="fixed top-5 right-5 z-50"><ThemeToggle /></div>
+      <div className="flex flex-wrap w-full max-w-[1000px] bg-white dark:bg-black rounded-3xl overflow-hidden border border-gray-200 dark:border-[#1a1a1a] shadow-[0_0_40px_rgba(0,0,0,0.1)] dark:shadow-[0_0_40px_rgba(0,0,0,0.5)]">
         {/* Left Panel */}
-        <div className="flex-[1_1_340px] relative bg-gradient-to-br from-[#d8b4fe] via-[#7e22ce] to-black p-10 flex flex-col justify-between min-h-[450px]">
+        <div className="flex-[1_1_340px] relative animate-gradient-wave bg-gradient-to-br from-white via-gray-100 to-gray-200 dark:from-[#d8b4fe] dark:via-[#7e22ce] dark:to-black p-10 flex flex-col justify-between min-h-[450px]">
           <div className="absolute inset-0 opacity-60 mix-blend-overlay pointer-events-none"
             style={{
               backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E\")"
@@ -254,14 +257,14 @@ function RegisterPageContent() {
         </div>
 
         {/* Right Panel */}
-        <div className="flex-[1_1_340px] bg-black p-10 flex flex-col justify-center">
+        <div className="flex-[1_1_340px] bg-white dark:bg-black p-10 flex flex-col justify-center">
           <div className="w-full max-w-[400px] mx-auto">
             {/* Step 1: Sign Up */}
             {step === 1 && (
               <>
                 <div className="mb-8">
-                  <div className="text-white text-[26px] font-semibold mb-2">Sign Up Account</div>
-                  <div className="text-[#888] text-sm">Enter your personal data to create your account.</div>
+                  <div className="text-foreground text-[26px] font-semibold mb-2">Sign Up Account</div>
+                  <div className="text-muted-foreground text-sm">Enter your personal data to create your account.</div>
                 </div>
 
                 <div className="flex gap-3 mb-6">
@@ -269,7 +272,7 @@ function RegisterPageContent() {
                     type="button"
                     onClick={() => handleOAuthSignUp('google')}
                     disabled={isLoading}
-                    className="flex-1 bg-transparent border border-[#333] text-white p-3 rounded-lg flex items-center justify-center gap-2 cursor-pointer transition-all hover:bg-[#111] hover:border-[#555] disabled:opacity-50"
+                    className="flex-1 bg-transparent border border-gray-300 dark:border-[#333] text-foreground p-3 rounded-lg flex items-center justify-center gap-2 cursor-pointer transition-all hover:bg-gray-100 dark:hover:bg-[#111] hover:border-gray-400 dark:hover:border-[#555] disabled:opacity-50"
                   >
                     <svg viewBox="0 0 24 24" width={20}>
                       <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -283,10 +286,10 @@ function RegisterPageContent() {
                   {/* LinkedIn button removed */}
                 </div>
 
-                <div className="flex items-center text-[#666] text-[13px] mb-6">
-                  <div className="flex-1 h-px bg-[#333]" />
+                <div className="flex items-center text-gray-400 dark:text-[#666] text-[13px] mb-6">
+                  <div className="flex-1 h-px bg-gray-300 dark:bg-[#333]" />
                   <span className="mx-4">Or</span>
-                  <div className="flex-1 h-px bg-[#333]" />
+                  <div className="flex-1 h-px bg-gray-300 dark:bg-[#333]" />
                 </div>
 
                 {error && (
@@ -297,47 +300,47 @@ function RegisterPageContent() {
 
                 <div className="flex gap-3 mb-5">
                   <div className="flex-1">
-                    <label className="block text-[#ccc] text-[13px] font-medium mb-2">First Name</label>
+                    <label className="block text-gray-600 dark:text-[#ccc] text-[13px] font-medium mb-2">First Name</label>
                     <input
                       type="text"
                       placeholder="eg. John"
                       value={formData.firstName}
                       onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                      className="w-full bg-[#121212] border border-[#1a1a1a] p-3.5 rounded-lg text-white outline-none text-sm transition-all focus:bg-[#1a1a1a] focus:border-[#444]"
+                      className="w-full bg-gray-100 dark:bg-[#121212] border border-gray-200 dark:border-[#1a1a1a] p-3.5 rounded-lg text-foreground outline-none text-sm transition-all focus:bg-gray-200 dark:focus:bg-[#1a1a1a] focus:border-gray-400 dark:focus:border-[#444]"
                     />
                   </div>
                   <div className="flex-1">
-                    <label className="block text-[#ccc] text-[13px] font-medium mb-2">Last Name <span className="text-[#666]">(optional)</span></label>
+                    <label className="block text-gray-600 dark:text-[#ccc] text-[13px] font-medium mb-2">Last Name <span className="text-gray-400 dark:text-[#666]">(optional)</span></label>
                     <input
                       type="text"
                       placeholder="eg. Doe"
                       value={formData.lastName}
                       onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                      className="w-full bg-[#121212] border border-[#1a1a1a] p-3.5 rounded-lg text-white outline-none text-sm transition-all focus:bg-[#1a1a1a] focus:border-[#444]"
+                      className="w-full bg-gray-100 dark:bg-[#121212] border border-gray-200 dark:border-[#1a1a1a] p-3.5 rounded-lg text-foreground outline-none text-sm transition-all focus:bg-gray-200 dark:focus:bg-[#1a1a1a] focus:border-gray-400 dark:focus:border-[#444]"
                     />
                   </div>
                 </div>
 
                 <div className="mb-5">
-                  <label className="block text-[#ccc] text-[13px] font-medium mb-2">Email</label>
+                  <label className="block text-gray-600 dark:text-[#ccc] text-[13px] font-medium mb-2">Email</label>
                   <input
                     type="email"
                     placeholder="eg. john@example.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full bg-[#121212] border border-[#1a1a1a] p-3.5 rounded-lg text-white outline-none text-sm transition-all focus:bg-[#1a1a1a] focus:border-[#444]"
+                    className="w-full bg-gray-100 dark:bg-[#121212] border border-gray-200 dark:border-[#1a1a1a] p-3.5 rounded-lg text-foreground outline-none text-sm transition-all focus:bg-gray-200 dark:focus:bg-[#1a1a1a] focus:border-gray-400 dark:focus:border-[#444]"
                   />
                 </div>
 
                 <div className="mb-2">
-                  <label className="block text-[#ccc] text-[13px] font-medium mb-2">Password</label>
+                  <label className="block text-gray-600 dark:text-[#ccc] text-[13px] font-medium mb-2">Password</label>
                   <div className="relative">
                     <input
                       type={showPassword ? "text" : "password"}
                       placeholder="Enter your password"
                       value={formData.password}
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                      className="w-full bg-[#121212] border border-[#1a1a1a] p-3.5 rounded-lg text-white outline-none text-sm transition-all focus:bg-[#1a1a1a] focus:border-[#444] pr-12"
+                      className="w-full bg-gray-100 dark:bg-[#121212] border border-gray-200 dark:border-[#1a1a1a] p-3.5 rounded-lg text-foreground outline-none text-sm transition-all focus:bg-gray-200 dark:focus:bg-[#1a1a1a] focus:border-gray-400 dark:focus:border-[#444] pr-12"
                     />
                     <svg
                       onClick={() => setShowPassword(!showPassword)}
@@ -357,18 +360,18 @@ function RegisterPageContent() {
                   </div>
                 </div>
 
-                <div className="text-[#666] text-xs mb-6">Must be at least 8 characters.</div>
+                <div className="text-gray-400 dark:text-[#666] text-xs mb-6">Must be at least 8 characters.</div>
 
                 <button
                   onClick={handleNext}
                   disabled={isLoading}
-                  className="w-full bg-white text-black border-none p-4 rounded-lg font-semibold cursor-pointer transition-all hover:bg-[#e5e5e5] disabled:opacity-50 text-[15px]"
+                  className="w-full bg-black text-white dark:bg-white dark:text-black border-none p-4 rounded-lg font-semibold cursor-pointer transition-all hover:bg-gray-800 dark:hover:bg-[#e5e5e5] disabled:opacity-50 text-[15px]"
                 >
                   Continue
                 </button>
 
-                <div className="text-center mt-6 text-[#888] text-[13px]">
-                  Already have an account? <Link href="/login" className="text-white no-underline hover:underline">Log in</Link>
+                <div className="text-center mt-6 text-muted-foreground text-[13px]">
+                  Already have an account? <Link href="/login" className="text-foreground font-semibold no-underline hover:underline">Log in</Link>
                 </div>
               </>
             )}
@@ -377,10 +380,10 @@ function RegisterPageContent() {
             {step === 2 && (
               <>
                 <div className="mb-8">
-                  <div className="text-white text-[26px] font-semibold mb-2">
+                  <div className="text-foreground text-[26px] font-semibold mb-2">
                     {isOAuthUser ? 'Complete Your Registration' : 'Select Your Role'}
                   </div>
-                  <div className="text-[#888] text-sm">
+                  <div className="text-muted-foreground text-sm">
                     {isOAuthUser ? 'Your account is connected. Choose your role to continue.' : 'Tell us about yourself and add optional details.'}
                   </div>
                 </div>
@@ -422,10 +425,10 @@ function RegisterPageContent() {
                             </button>
                           </p>
                         </div>
-                        <p className="text-sm font-semibold text-white truncate">
+                        <p className="text-sm font-semibold text-foreground truncate">
                           {session.user.name}
                         </p>
-                        <p className="text-xs text-[#888] truncate">
+                        <p className="text-xs text-muted-foreground truncate">
                           {session.user.email}
                         </p>
                       </div>
@@ -452,14 +455,14 @@ function RegisterPageContent() {
                 )}
 
                 <div className="mb-6">
-                  <label className="block text-[#ccc] text-[13px] font-medium mb-2">I am a *</label>
+                  <label className="block text-gray-600 dark:text-[#ccc] text-[13px] font-medium mb-2">I am a *</label>
                   <div className="flex gap-3">
                     <button
                       type="button"
                       onClick={() => setFormData({ ...formData, role: 'candidate' })}
                       className={`flex-1 p-4 rounded-lg border-2 transition-all ${formData.role === 'candidate'
-                        ? 'bg-white text-black border-white'
-                        : 'bg-transparent text-white border-[#333] hover:border-[#555]'
+                        ? 'bg-black text-white border-black dark:bg-white dark:text-black dark:border-white'
+                        : 'bg-transparent text-foreground border-gray-300 dark:border-[#333] hover:border-gray-400 dark:hover:border-[#555]'
                         }`}
                     >
                       <div className="font-semibold">Candidate</div>
@@ -469,8 +472,8 @@ function RegisterPageContent() {
                       type="button"
                       onClick={() => setFormData({ ...formData, role: 'hr' })}
                       className={`flex-1 p-4 rounded-lg border-2 transition-all ${formData.role === 'hr'
-                        ? 'bg-white text-black border-white'
-                        : 'bg-transparent text-white border-[#333] hover:border-[#555]'
+                        ? 'bg-black text-white border-black dark:bg-white dark:text-black dark:border-white'
+                        : 'bg-transparent text-foreground border-gray-300 dark:border-[#333] hover:border-gray-400 dark:hover:border-[#555]'
                         }`}
                     >
                       <div className="font-semibold">Recruiter</div>
@@ -480,47 +483,47 @@ function RegisterPageContent() {
                 </div>
 
                 <div className="mb-5">
-                  <label className="block text-[#ccc] text-[13px] font-medium mb-2">Phone Number *</label>
+                  <label className="block text-gray-600 dark:text-[#ccc] text-[13px] font-medium mb-2">Phone Number *</label>
                   <input
                     type="tel"
                     placeholder="+1 (555) 000-0000"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full bg-[#121212] border border-[#1a1a1a] p-3.5 rounded-lg text-white outline-none text-sm transition-all focus:bg-[#1a1a1a] focus:border-[#444]"
+                    className="w-full bg-gray-100 dark:bg-[#121212] border border-gray-200 dark:border-[#1a1a1a] p-3.5 rounded-lg text-foreground outline-none text-sm transition-all focus:bg-gray-200 dark:focus:bg-[#1a1a1a] focus:border-gray-400 dark:focus:border-[#444]"
                     required
                   />
                 </div>
 
                 <div className="mb-5">
-                  <label className="block text-[#ccc] text-[13px] font-medium mb-2">LinkedIn URL (Optional)</label>
+                  <label className="block text-gray-600 dark:text-[#ccc] text-[13px] font-medium mb-2">LinkedIn URL (Optional)</label>
                   <input
                     type="url"
                     placeholder="https://linkedin.com/in/your-profile"
                     value={formData.linkedinUrl}
                     onChange={(e) => setFormData({ ...formData, linkedinUrl: e.target.value })}
-                    className="w-full bg-[#121212] border border-[#1a1a1a] p-3.5 rounded-lg text-white outline-none text-sm transition-all focus:bg-[#1a1a1a] focus:border-[#444]"
+                    className="w-full bg-gray-100 dark:bg-[#121212] border border-gray-200 dark:border-[#1a1a1a] p-3.5 rounded-lg text-foreground outline-none text-sm transition-all focus:bg-gray-200 dark:focus:bg-[#1a1a1a] focus:border-gray-400 dark:focus:border-[#444]"
                   />
                 </div>
 
                 <div className="mb-5">
-                  <label className="block text-[#ccc] text-[13px] font-medium mb-2">GitHub URL (Optional)</label>
+                  <label className="block text-gray-600 dark:text-[#ccc] text-[13px] font-medium mb-2">GitHub URL (Optional)</label>
                   <input
                     type="url"
                     placeholder="https://github.com/your-username"
                     value={formData.githubUrl}
                     onChange={(e) => setFormData({ ...formData, githubUrl: e.target.value })}
-                    className="w-full bg-[#121212] border border-[#1a1a1a] p-3.5 rounded-lg text-white outline-none text-sm transition-all focus:bg-[#1a1a1a] focus:border-[#444]"
+                    className="w-full bg-gray-100 dark:bg-[#121212] border border-gray-200 dark:border-[#1a1a1a] p-3.5 rounded-lg text-foreground outline-none text-sm transition-all focus:bg-gray-200 dark:focus:bg-[#1a1a1a] focus:border-gray-400 dark:focus:border-[#444]"
                   />
                 </div>
 
                 <div className="mb-6">
-                  <label className="block text-[#ccc] text-[13px] font-medium mb-2">Portfolio URL (Optional)</label>
+                  <label className="block text-gray-600 dark:text-[#ccc] text-[13px] font-medium mb-2">Portfolio URL (Optional)</label>
                   <input
                     type="url"
                     placeholder="https://your-portfolio.com"
                     value={formData.portfolioUrl}
                     onChange={(e) => setFormData({ ...formData, portfolioUrl: e.target.value })}
-                    className="w-full bg-[#121212] border border-[#1a1a1a] p-3.5 rounded-lg text-white outline-none text-sm transition-all focus:bg-[#1a1a1a] focus:border-[#444]"
+                    className="w-full bg-gray-100 dark:bg-[#121212] border border-gray-200 dark:border-[#1a1a1a] p-3.5 rounded-lg text-foreground outline-none text-sm transition-all focus:bg-gray-200 dark:focus:bg-[#1a1a1a] focus:border-gray-400 dark:focus:border-[#444]"
                   />
                 </div>
 
@@ -529,7 +532,7 @@ function RegisterPageContent() {
                     <button
                       onClick={() => setStep(1)}
                       disabled={isLoading}
-                      className="flex-1 bg-transparent text-white border border-[#333] p-4 rounded-lg font-semibold cursor-pointer transition-all hover:bg-[#111] hover:border-[#555] disabled:opacity-50 text-[15px]"
+                      className="flex-1 bg-transparent text-foreground border border-gray-300 dark:border-[#333] p-4 rounded-lg font-semibold cursor-pointer transition-all hover:bg-gray-100 dark:hover:bg-[#111] hover:border-gray-400 dark:hover:border-[#555] disabled:opacity-50 text-[15px]"
                     >
                       Back
                     </button>
@@ -537,7 +540,7 @@ function RegisterPageContent() {
                   <button
                     onClick={handleNext}
                     disabled={isLoading}
-                    className={`${isOAuthUser ? 'w-full' : 'flex-1'} bg-white text-black border-none p-4 rounded-lg font-semibold cursor-pointer transition-all hover:bg-[#e5e5e5] disabled:opacity-50 text-[15px]`}
+                    className={`${isOAuthUser ? 'w-full' : 'flex-1'} bg-black text-white dark:bg-white dark:text-black border-none p-4 rounded-lg font-semibold cursor-pointer transition-all hover:bg-gray-800 dark:hover:bg-[#e5e5e5] disabled:opacity-50 text-[15px]`}
                   >
                     Continue
                   </button>
@@ -549,8 +552,8 @@ function RegisterPageContent() {
             {step === 3 && (
               <>
                 <div className="mb-8">
-                  <div className="text-white text-[26px] font-semibold mb-2">You're All Set!</div>
-                  <div className="text-[#888] text-sm">Review your details and complete registration.</div>
+                  <div className="text-foreground text-[26px] font-semibold mb-2">You're All Set!</div>
+                  <div className="text-muted-foreground text-sm">Review your details and complete registration.</div>
                 </div>
 
                 {error && (
@@ -559,19 +562,19 @@ function RegisterPageContent() {
                   </div>
                 )}
 
-                <div className="mb-6 p-4 bg-[#121212] rounded-lg border border-[#1a1a1a]">
+                <div className="mb-6 p-4 bg-gray-100 dark:bg-[#121212] rounded-lg border border-gray-200 dark:border-[#1a1a1a]">
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <div className="text-[#888] mb-1">Name</div>
-                      <div className="text-white">{formData.firstName} {formData.lastName}</div>
+                      <div className="text-muted-foreground mb-1">Name</div>
+                      <div className="text-foreground">{formData.firstName} {formData.lastName}</div>
                     </div>
                     <div>
-                      <div className="text-[#888] mb-1">Email</div>
-                      <div className="text-white truncate">{formData.email}</div>
+                      <div className="text-muted-foreground mb-1">Email</div>
+                      <div className="text-foreground truncate">{formData.email}</div>
                     </div>
                     <div className="col-span-2">
-                      <div className="text-[#888] mb-1">Role</div>
-                      <div className="text-white capitalize">{formData.role}</div>
+                      <div className="text-muted-foreground mb-1">Role</div>
+                      <div className="text-foreground capitalize">{formData.role}</div>
                     </div>
                   </div>
                 </div>
@@ -580,14 +583,14 @@ function RegisterPageContent() {
                   <button
                     onClick={() => setStep(2)}
                     disabled={isLoading}
-                    className="flex-1 bg-transparent text-white border border-[#333] p-4 rounded-lg font-semibold cursor-pointer transition-all hover:bg-[#111] hover:border-[#555] disabled:opacity-50 text-[15px]"
+                    className="flex-1 bg-transparent text-foreground border border-gray-300 dark:border-[#333] p-4 rounded-lg font-semibold cursor-pointer transition-all hover:bg-gray-100 dark:hover:bg-[#111] hover:border-gray-400 dark:hover:border-[#555] disabled:opacity-50 text-[15px]"
                   >
                     Back
                   </button>
                   <button
                     onClick={handleSubmit}
                     disabled={isLoading}
-                    className="flex-1 bg-white text-black border-none p-4 rounded-lg font-semibold cursor-pointer transition-all hover:bg-[#e5e5e5] disabled:opacity-50 text-[15px]"
+                    className="flex-1 bg-black text-white dark:bg-white dark:text-black border-none p-4 rounded-lg font-semibold cursor-pointer transition-all hover:bg-gray-800 dark:hover:bg-[#e5e5e5] disabled:opacity-50 text-[15px]"
                   >
                     {isLoading ? 'Creating Account...' : 'Complete Registration'}
                   </button>

@@ -7,6 +7,7 @@ import DarkVeil from "@/components/DarkVeil";
 import { Button } from "@/components/ui/button";
 import ScrollVelocity from "@/components/ScrollVelocity";
 import { showFeatureNotImplemented } from "@/lib/toast-utils";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 // Marketing Section Components
 import HeroArcSection from "@/components/marketing/HeroArcSection";
@@ -159,7 +160,8 @@ export default function LandingPage() {
           </NavigationMenuList>
         </NavigationMenu>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
           {!session && (
             <Link href="/login" className="hidden sm:block">
               <Button variant="ghost" className="text-sm ">
