@@ -4,20 +4,11 @@ Email Notification Utility
 Sends transactional emails to candidates and HR recruiters for key
 recruitment lifecycle events.
 
-Supports TWO transport backends:
   1. **Brevo API** (preferred on Render / cloud) — set BREVO_API_KEY
-  2. **SMTP**      (Gmail App Password)         — set SMTP_USERNAME + SMTP_PASSWORD
 
 Configuration (backend/.env):
-    # Option A – Brevo (recommended for cloud)
     BREVO_API_KEY = xkeysib-...
 
-    # Option B – Gmail SMTP
-    SMTP_SERVER   = smtp.gmail.com
-    SMTP_PORT     = 587
-    SMTP_USERNAME = your-email@gmail.com
-    SMTP_PASSWORD = your-app-password
-    EMAIL_FROM    = "Metis Hire <your-email@gmail.com>"
 
 If neither is configured the module prints a warning and returns
 gracefully (no crash) — safe for development.
@@ -25,41 +16,28 @@ gracefully (no crash) — safe for development.
 
 import os
 import json
-import smtplib
 import logging
 import urllib.request
 import urllib.error
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.mime.base import MIMEBase
-from email import encoders
 from typing import Optional, List
 
 logger = logging.getLogger(__name__)
 
 
 # ── Configuration ─────────────────────────────────────────────────────────────
-_SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")
-_SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
-_SMTP_USERNAME = os.getenv("SMTP_USERNAME", "")
-_SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
-_EMAIL_FROM = os.getenv("EMAIL_FROM", "Metis Hire <noreply@metishire.com>")
-
 _BREVO_API_KEY = os.getenv("BREVO_API_KEY", "")
+_BREVO_SENDER_EMAIL = os.getenv("BREVO_SENDER_EMAIL", "")
+_BREVO_SENDER_NAME = os.getenv("BREVO_SENDER_NAME", "Metis Hire")
 
-_SMTP_ENABLED = bool(_SMTP_USERNAME and _SMTP_PASSWORD)
 _BREVO_ENABLED = bool(_BREVO_API_KEY)
-_ENABLED = _SMTP_ENABLED or _BREVO_ENABLED
 
-if not _ENABLED:
+if not _BREVO_ENABLED:
     print(
-        "[EMAIL] SMTP credentials not configured. "
-        "Set SMTP_USERNAME and SMTP_PASSWORD in backend/.env to enable email notifications."
+        "[EMAIL] Brevo API credentials not configured. "
+        "Set BREVO_API_KEY in backend/.env to enable email notifications."
     )
-elif _BREVO_ENABLED:
-    print("[EMAIL] Using Brevo API for email delivery.")
 else:
-    print(f"[EMAIL] Using SMTP ({_SMTP_SERVER}:{_SMTP_PORT}) for email delivery.")
+    print("[EMAIL] Using Brevo API for email delivery.")
 # ─────────────────────────────────────────────────────────────────────────────
 
 
@@ -71,8 +49,11 @@ def _send_via_brevo(
     try:
         import base64 as _b64
 
+        sender_email = _BREVO_SENDER_EMAIL or "metishire2.0@gmail.com"
+        sender_name = _BREVO_SENDER_NAME or "Metis Hire"
+
         email_payload = {
-            "sender": {"name": "Metis Hire", "email": _SMTP_USERNAME or "metishire2.0@gmail.com"},
+            "sender": {"name": sender_name, "email": sender_email},
             "to": [{"email": to}],
             "subject": subject,
             "htmlContent": html_body,
@@ -102,7 +83,10 @@ def _send_via_brevo(
         )
         with urllib.request.urlopen(req, timeout=15) as resp:
             if resp.status in (200, 201):
-                print(f"[EMAIL] Sent via Brevo to {to}: {subject}")
+                try:
+                    print(f"[EMAIL] Sent via Brevo to {to}: {subject}")
+                except UnicodeEncodeError:
+                    print(f"[EMAIL] Sent via Brevo to {to}: {subject.encode('ascii', errors='replace').decode('ascii')}")
                 return True
             else:
                 print(f"[EMAIL] Brevo returned status {resp.status}")
@@ -116,41 +100,6 @@ def _send_via_brevo(
         return False
 
 
-def _send_via_smtp(
-    to: str, subject: str, html_body: str,
-    attachments: Optional[List[tuple]] = None
-) -> bool:
-    """Send email using SMTP (Gmail)."""
-    try:
-        msg = MIMEMultipart("mixed")
-        msg["From"] = _EMAIL_FROM
-        msg["To"] = to
-        msg["Subject"] = subject
-
-        msg.attach(MIMEText(html_body, "html"))
-
-        if attachments:
-            for filename, file_bytes in attachments:
-                part = MIMEBase("application", "octet-stream")
-                part.set_payload(file_bytes)
-                encoders.encode_base64(part)
-                part.add_header("Content-Disposition", f'attachment; filename="{filename}"')
-                msg.attach(part)
-
-        with smtplib.SMTP(_SMTP_SERVER, _SMTP_PORT) as server:
-            server.ehlo()
-            server.starttls()
-            server.login(_SMTP_USERNAME, _SMTP_PASSWORD)
-            server.sendmail(_EMAIL_FROM, to, msg.as_string())
-
-        print(f"[EMAIL] Sent via SMTP to {to}: {subject}")
-        return True
-
-    except Exception as e:
-        print(f"[EMAIL] SMTP send failed to {to}: {e}")
-        return False
-
-
 def _send(
     to: str,
     subject: str,
@@ -158,23 +107,13 @@ def _send(
     attachments: Optional[List[tuple]] = None
 ) -> bool:
     """
-    Send an email using the best available transport.
-
-    Priority: Brevo API → SMTP → skip.
+    Send an email using Brevo API transport.
     """
-    if not _ENABLED:
-        print(f"[EMAIL] (not sent — no transport configured) To: {to} | Subject: {subject}")
+    if not _BREVO_ENABLED:
+        print(f"[EMAIL] (not sent — Brevo not configured) To: {to} | Subject: {subject}")
         return False
 
-    # Try Brevo first (works on Render where SMTP ports are blocked)
-    if _BREVO_ENABLED:
-        return _send_via_brevo(to, subject, html_body, attachments)
-
-    # Fallback to SMTP
-    if _SMTP_ENABLED:
-        return _send_via_smtp(to, subject, html_body, attachments)
-
-    return False
+    return _send_via_brevo(to, subject, html_body, attachments)
 
 
 # ── Public notification functions ─────────────────────────────────────────────
